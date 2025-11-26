@@ -1,0 +1,11 @@
+%Desired trajectory
+function [X, Y, Z] = desired_trajectory(t, p)
+
+    X = 
+    
+    XYZ_fun = @(t) [...
+        0.15-p.r*cos(p.omega*t);...
+        0;...
+        p.r*sin(p.omega*t)];
+   
+end
