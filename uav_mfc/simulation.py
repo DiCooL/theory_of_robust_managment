@@ -106,7 +106,7 @@ def simulate(
         alpha_new, alpha_dot_new, alpha_ddot_new = step(torque, alpha, alpha_dot, plant, dt)
 
         for key, value in (
-            ("time", t), ("alpha", alpha_new), ("alpha_dot", alpha_dot_new),
+            ("time", t), ("alpha", alpha), ("alpha_dot", alpha_dot),
             ("alpha_ddot", alpha_ddot_new), ("alpha_d", alpha_d),
             ("alpha_dot_d", alpha_dot_d), ("alpha_ddot_d", alpha_ddot_d),
             ("torque", torque), ("u_bar", u_bar), ("u_delta", u_delta),

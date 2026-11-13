@@ -25,6 +25,7 @@ def main():
         print(f"{name:8} {loop:14} {py:>22} {octave:>17.4f}")
     print(f"\nNoisy cases: mean ± std over {N_SEEDS} seeds; MATLAB/Octave random streams differ from NumPy.")
     print("Thesis (MATLAB, rng(2)) reports RMSE = 1.002 deg for exp3_1.")
+    print("Octave/MATLAB RMSE pairs alpha(t_k+1) with alpha_d(t_k); Python pairs both at t_k.")
 
 
 if __name__ == "__main__":
