@@ -24,8 +24,10 @@ matlab/
   thesis_2026/           MATLAB-код ВКР (exp1…exp3_1, param.m и функции)
   coursework_2025_*/     код курсовой 2025 (первый закон управления, a = −0.3)
   robot_manipulator/     воспроизведение примера Narikiyo для трёхзвенного манипулятора
+stand_study/              исследование реализуемости на стенде: шум измерений, насыщение,
+                         такт регулятора, задержки камеры и гироскопа, инерция моторов
 docs/
-  article_draft_2025.pdf черновик статьи 2025 (курсовой этап, неактуален)
+  figures/               структурные схемы (SVG и PNG)
 ```
 
 Чужие работы в репозиторий не добавляются — только ссылки на них (раздел «Источники»).
@@ -89,6 +91,13 @@ $$\tilde u = 2\mu\dot\alpha,\qquad u_{fil}[k{+}1] = u_{fil}[k] + dt\,T\,(M_{bx}[
 Интегрирование объекта: $\dot\alpha_{k+1} = \dot\alpha_k + \ddot\alpha_k\,dt$, $\alpha_{k+1} = \alpha_k + \dot\alpha_k\,dt + \ddot\alpha_k\,dt^2/2$; $dt = 10^{-3}$ с.
 
 Итоговые параметры ВКР: $T = 15$, $\omega_n = 100$, $\zeta = 1.01$ ($a = -202$, $b = -10^4$); траектория $\alpha_d = \tfrac{\pi}{6}\sin(\tfrac{\pi}{10}t - \tfrac{\pi}{2}) + \tfrac{\pi}{6}$; горизонт 20 с.
+
+## Исследование для стенда
+
+Папка `stand_study/` — отдельная модель канала крена с ограничениями реального стенда и подобранными под них параметрами регулятора ($\omega_n = 15$, $\zeta = 2$, закон с прямой связью, без внутреннего контура MFC). Описание, допущения и результаты — в [`stand_study/README.md`](stand_study/README.md). Схемы:
+
+- [`docs/figures/mfc_scheme_thesis.png`](docs/figures/mfc_scheme_thesis.png) — схема MFC из ВКР (рис. 5);
+- [`docs/figures/control_scheme_stand.png`](docs/figures/control_scheme_stand.png) — схема, по которой считает `stand_study`.
 
 ## Соответствие MATLAB → Python
 

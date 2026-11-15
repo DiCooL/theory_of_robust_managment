@@ -16,10 +16,10 @@ DIVERGENCE_ANGLE = 4 * math.pi
 def simulate(
     omega_n: float = OMEGA_N,
     zeta: float = ZETA,
-    inner_loop: str = "mfc",
+    inner_loop: str = "none",
     noise: Noise = NO_NOISE,
     stand: Stand = IDEAL_STAND,
-    feedforward: bool = False,
+    feedforward: bool = True,
     filter_T: float = FILTER_T,
     t_final: float = T_FINAL,
     dt: float = DT,

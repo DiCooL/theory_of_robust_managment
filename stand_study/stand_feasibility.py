@@ -10,13 +10,13 @@ from config import (
     ANGLE_NOISE_STD,
     IDEAL_STAND,
     INERTIA,
-    OMEGA_N,
     RATE_NOISE_STD,
     REAL_STAND,
     SATURATED_STAND,
     SENSOR_NOISE,
+    THESIS_OMEGA_N,
+    THESIS_ZETA,
     TORQUE_LIMIT,
-    ZETA,
     gains,
 )
 from simulation import simulate
@@ -71,7 +71,7 @@ def best(rows, aperiodic_only):
 
 
 def main():
-    a, b = gains(OMEGA_N, ZETA)
+    a, b = gains(THESIS_OMEGA_N, THESIS_ZETA)
     kp, kd = -b * INERTIA, -a * INERTIA
     noise_torque = math.hypot(kp * ANGLE_NOISE_STD, kd * RATE_NOISE_STD)
     print(f"torque limit = {TORQUE_LIMIT:.3f} N m")
@@ -79,7 +79,7 @@ def main():
     print(f"torque std from sensor noise alone = {noise_torque:.3f} N m "
           f"({noise_torque / TORQUE_LIMIT:.2f} of the limit)")
 
-    scenario_table("current parameters, canonical law", OMEGA_N, ZETA, "mfc", False)
+    scenario_table("current parameters, canonical law", THESIS_OMEGA_N, THESIS_ZETA, "mfc", False)
 
     variants = {}
     for inner_loop, feedforward in product(("none", "mfc"), (False, True)):
@@ -103,7 +103,7 @@ def main():
     omega_c, zeta_c = chosen[0], chosen[1]
     scenario_table("selected parameters, feedforward law", omega_c, zeta_c, "none", True)
     scenario_table("selected parameters, canonical law", omega_c, zeta_c, "mfc", False)
-    scenario_table("current parameters, feedforward law", OMEGA_N, ZETA, "none", True)
+    scenario_table("current parameters, feedforward law", THESIS_OMEGA_N, THESIS_ZETA, "none", True)
 
     print(f"\nsensitivity of the selected point (omega_n={omega_c}, zeta={zeta_c}, feedforward, saturation)")
     print(f"   {'motor_tau':>9} {'cam_delay':>9} {'RMSE,deg':>9} {'max,deg':>9} {'M rms':>9} {'sat,%':>7}")
@@ -113,7 +113,7 @@ def main():
 
     RESULTS.mkdir(exist_ok=True)
     cases = (
-        (f"current: omega_n={OMEGA_N:g}, zeta={ZETA}", OMEGA_N, ZETA, "mfc", False),
+        (f"current: omega_n={THESIS_OMEGA_N:g}, zeta={THESIS_ZETA}", THESIS_OMEGA_N, THESIS_ZETA, "mfc", False),
         (f"selected: omega_n={omega_c:g}, zeta={zeta_c}", omega_c, zeta_c, "none", True),
     )
     fig, axes = plt.subplots(2, 2, figsize=(13, 8), sharex=True)

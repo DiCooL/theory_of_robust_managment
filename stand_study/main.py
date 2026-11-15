@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from config import SENSOR_NOISE
+from config import OMEGA_N, REAL_STAND, SENSOR_NOISE, TORQUE_LIMIT, ZETA, gains
 from simulation import simulate
 
 
@@ -17,6 +17,8 @@ def plot_result(res: dict) -> None:
     ax1.legend(loc="best")
     ax1.grid(True)
     ax2.plot(t, res["torque_cmd"], "b-", linewidth=1)
+    ax2.axhline(TORQUE_LIMIT, color="gray", linestyle=":")
+    ax2.axhline(-TORQUE_LIMIT, color="gray", linestyle=":")
     ax2.set_xlabel("Time, s")
     ax2.set_ylabel("Commanded torque, N m")
     ax2.grid(True)
@@ -42,13 +44,16 @@ def plot_result(res: dict) -> None:
     plt.show()
 
 
-def exp3_1() -> dict:
-    res = simulate(inner_loop="mfc", noise=SENSOR_NOISE)
+def stand_experiment() -> dict:
+    a, b = gains(OMEGA_N, ZETA)
+    print(f"omega_n = {OMEGA_N:g}, zeta = {ZETA:g}: a = {a:g}, b = {b:g}")
+    res = simulate(inner_loop="none", feedforward=True, noise=SENSOR_NOISE, stand=REAL_STAND)
     print(f"RMSE = {res['rmse_deg']:.4f} deg")
     print(f"max|e| = {res['max_error_deg']:.4f} deg")
-    print(f"torque: rms = {res['torque_rms']:.3f} N m, max = {res['torque_max']:.3f} N m")
+    print(f"torque: rms = {res['torque_rms']:.3f} N m, max = {res['torque_max']:.3f} N m, "
+          f"saturation {100 * res['saturation_share']:.1f} %")
     return res
 
 
 if __name__ == "__main__":
-    plot_result(exp3_1())
+    plot_result(stand_experiment())
