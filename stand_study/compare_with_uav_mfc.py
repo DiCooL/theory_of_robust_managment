@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
-from config import NO_NOISE, SENSOR_NOISE, THESIS_NOISE
+from config import NO_NOISE, SENSOR_NOISE, THESIS_NOISE, THESIS_OMEGA_N, THESIS_ZETA
 from simulation import simulate
 
 HERE = Path(__file__).resolve().parent
@@ -12,6 +12,8 @@ UPSTREAM = next(p for p in (HERE / "_upstream", HERE.parent) if (p / "uav_mfc").
 sys.path.insert(0, str(UPSTREAM))
 
 import uav_mfc
+
+THESIS = dict(omega_n=THESIS_OMEGA_N, zeta=THESIS_ZETA, feedforward=False)
 
 N_SEEDS = 30
 LOOPS = ("none", "inverse_model", "mfc")
@@ -24,7 +26,7 @@ def upstream_noise(noise, mode):
 def main():
     print("1) no noise: max |alpha - alpha_uav_mfc| over 20 s, RMSE")
     for loop in LOOPS:
-        ours = simulate(inner_loop=loop, noise=NO_NOISE)
+        ours = simulate(inner_loop=loop, noise=NO_NOISE, **THESIS)
         ref = uav_mfc.simulate(config=uav_mfc.SimConfig(inner_loop=loop))
         diff = np.max(np.abs(ours["alpha"] - ref.alpha))
         print(f"   {loop:14} diff = {diff:.2e} rad   RMSE {ours['rmse_deg']:.4f} / {ref.rmse_deg:.4f} deg")
@@ -36,14 +38,14 @@ def main():
             ours, meas, state = [], [], []
             for seed in range(N_SEEDS):
                 cfg = uav_mfc.SimConfig(inner_loop=loop, seed=seed)
-                ours.append(simulate(inner_loop=loop, noise=noise, seed=seed)["rmse_deg"])
+                ours.append(simulate(inner_loop=loop, noise=noise, seed=seed, **THESIS)["rmse_deg"])
                 meas.append(uav_mfc.simulate(noise=upstream_noise(noise, "measurement"), config=cfg).rmse_deg)
                 state.append(uav_mfc.simulate(noise=upstream_noise(noise, "state"), config=cfg).rmse_deg)
             print(f"   {loop:14} fixed {np.mean(ours):.4f} ± {np.std(ours):.4f}   "
                   f"uav_mfc measurement {np.mean(meas):.4f} ± {np.std(meas):.4f}   "
                   f"uav_mfc state {np.mean(state):.4f} ± {np.std(state):.4f}")
 
-    ours = simulate(inner_loop="mfc", noise=THESIS_NOISE, seed=2)
+    ours = simulate(inner_loop="mfc", noise=THESIS_NOISE, seed=2, **THESIS)
     ref = uav_mfc.simulate(noise=upstream_noise(THESIS_NOISE, "measurement"),
                            config=uav_mfc.SimConfig(inner_loop="mfc", seed=2))
     print("3) same seed, mfc, thesis noise, measurement mode:")
