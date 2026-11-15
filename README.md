@@ -97,7 +97,9 @@ $$\tilde u = 2\mu\dot\alpha,\qquad u_{fil}[k{+}1] = u_{fil}[k] + dt\,T\,(M_{bx}[
 Папка `stand_study/` — отдельная модель канала крена с ограничениями реального стенда и подобранными под них параметрами регулятора ($\omega_n = 15$, $\zeta = 2$, закон с прямой связью, без внутреннего контура MFC). Описание, допущения и результаты — в [`stand_study/README.md`](stand_study/README.md). Схемы:
 
 - [`docs/figures/mfc_scheme_thesis.png`](docs/figures/mfc_scheme_thesis.png) — схема MFC из ВКР (рис. 5);
-- [`docs/figures/control_scheme_stand.png`](docs/figures/control_scheme_stand.png) — схема, по которой считает `stand_study`.
+- [`docs/figures/control_scheme_stand.png`](docs/figures/control_scheme_stand.png) — схема, по которой считает `stand_study`;
+- [`docs/figures/actuator_nonlinearities.png`](docs/figures/actuator_nonlinearities.png) — зона нечувствительности, насыщение и их комбинация;
+- [`docs/figures/actuator_study.png`](docs/figures/actuator_study.png) — компенсация зоны нечувствительности и anti-windup на модели стенда.
 
 ## Соответствие MATLAB → Python
 

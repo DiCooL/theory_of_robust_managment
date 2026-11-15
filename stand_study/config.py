@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import math
 
 INERTIA = 0.02
@@ -15,6 +15,8 @@ THESIS_ZETA = 1.01
 OMEGA_N = 15.0
 ZETA = 2.0
 FILTER_T = 15.0
+INTEGRAL_POLE = 2.0
+AW_TRACKING_TIME = 0.05
 
 TRAJ_AMPLITUDE = math.pi / 6
 TRAJ_BIAS = math.pi / 6
@@ -33,6 +35,9 @@ ARM = 0.23
 THRUST_AT_PWM_1600 = 5.5
 THRUST_AT_PWM_1150 = 0.6
 TORQUE_LIMIT = ARM * (THRUST_AT_PWM_1600 - THRUST_AT_PWM_1150)
+DEADZONE_MAX = ARM * THRUST_AT_PWM_1150
+DEADZONE = 0.05
+DEADZONE_INVERSE_BAND = 0.02
 
 
 @dataclass(frozen=True)
@@ -45,6 +50,7 @@ class Noise:
 @dataclass(frozen=True)
 class Stand:
     torque_limit: float | None = None
+    deadzone: tuple[float, float] = (0.0, 0.0)
     control_period: float = DT
     camera_period: float = DT
     camera_delay: float = 0.0
@@ -66,7 +72,12 @@ REAL_STAND = Stand(
     gyro_delay=0.004,
     motor_tau=0.05,
 )
+DEADZONE_STAND = replace(REAL_STAND, deadzone=(-DEADZONE, DEADZONE))
 
 
 def gains(omega_n: float = OMEGA_N, zeta: float = ZETA) -> tuple[float, float]:
     return -2.0 * zeta * omega_n, -omega_n**2
+
+
+def integral_gain(omega_n: float = OMEGA_N, pole: float = INTEGRAL_POLE) -> float:
+    return -pole * omega_n**2
